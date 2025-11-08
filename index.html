@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Public Grievance Reporting System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --background-color: #121212;
+        --surface-color: #1e1e1e;
+        --primary-color: #03a9f4; /* A more civic-minded blue */
+        --primary-variant-color: #0277bd;
+        --secondary-color: #03dac6;
+        --on-background-color: #ffffff;
+        --on-surface-color: #e0e0e0;
+        --border-color: #333333;
+        --error-color: #ff8a80;
+        --font-family: "Poppins", sans-serif;
+        --status-pending: #fbc02d; /* Yellow */
+        --status-progress: #1976d2; /* Blue */
+        --status-resolved: #388e3c; /* Green */
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background-color: var(--background-color);
+        color: var(--on-background-color);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      #root {
+        width: 100%;
+        max-width: 900px;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+      
+      /* --- Auth Pages --- */
+      .auth-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: calc(100vh - 4rem);
+        max-width: 400px;
+        margin: auto;
+      }
+      
+      .auth-form {
+        width: 100%;
+        background-color: var(--surface-color);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .auth-form h1 {
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+
+      .auth-switch {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .auth-switch button {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        cursor: pointer;
+        font-weight: 500;
+        padding: 0;
+      }
+      
+      /* --- App Header --- */
+      .app-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background-color: var(--surface-color);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+      }
+      
+      .app-header .user-info {
+        font-weight: 500;
+      }
+      
+      .app-header .user-info span {
+        font-weight: 400;
+        color: var(--on-surface-color);
+      }
+      
+      .logout-button {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--primary-color);
+        background-color: transparent;
+        color: var(--primary-color);
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      
+      .logout-button:hover {
+        background-color: rgba(3, 169, 244, 0.1);
+      }
+
+
+      header {
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--on-background-color);
+      }
+      
+      h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      p {
+        color: var(--on-surface-color);
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+      }
+      
+      .dashboard-section {
+        margin-top: 2rem;
+      }
+
+      .container {
+        background-color: var(--surface-color);
+        border-radius: 12px;
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      label {
+        font-weight: 500;
+        font-size: 1rem;
+        color: var(--on-surface-color);
+      }
+
+      .input-base {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background-color: var(--background-color);
+        color: var(--on-surface-color);
+        font-family: var(--font-family);
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .input-base:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(3, 169, 244, 0.25);
+      }
+      
+      .input-base[disabled] {
+        background-color: #2a2a2a;
+        cursor: not-allowed;
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+      
+      select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23e0e0e0' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1em;
+      }
+
+      .location-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      
+      .location-group > button {
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--primary-color);
+        background-color: transparent;
+        color: var(--primary-color);
+        font-family: var(--font-family);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      .location-group > button:hover {
+        background-color: rgba(3, 169, 244, 0.1);
+      }
+      
+      .location-display {
+        font-size: 0.9rem;
+        color: var(--on-surface-color);
+        background-color: var(--background-color);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+      }
+      
+      .file-input-label {
+        display: inline-block;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--primary-color);
+        background-color: transparent;
+        color: var(--primary-color);
+        font-family: var(--font-family);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      .file-input-label:hover {
+        background-color: rgba(3, 169, 244, 0.1);
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      .file-name {
+        margin-left: 1rem;
+        font-style: italic;
+        color: var(--on-surface-color);
+      }
+
+      .submit-button {
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        border: none;
+        background-color: var(--primary-color);
+        color: var(--background-color);
+        font-family: var(--font-family);
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.1s ease;
+      }
+
+      .submit-button:hover:not(:disabled) {
+        background-color: var(--primary-variant-color);
+      }
+      
+      .submit-button:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+
+      .submit-button:disabled {
+        background-color: #555;
+        cursor: not-allowed;
+      }
+
+      .result {
+        background-color: var(--surface-color);
+        border-radius: 12px;
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+        line-height: 1.7;
+        font-size: 1.05rem;
+        color: var(--on-surface-color);
+      }
+      
+      .result h2 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        border: none;
+      }
+      
+      .result p {
+        text-align: left;
+        margin-bottom: 0.5rem;
+      }
+      
+      .result strong {
+        color: var(--on-background-color);
+      }
+
+      .loading, .error {
+        text-align: center;
+        padding: 2rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        background-color: var(--surface-color);
+        border: 1px solid var(--border-color);
+      }
+
+      .error {
+        color: var(--error-color);
+        border-color: var(--error-color);
+      }
+      
+      /* --- Grievance Table --- */
+      .grievance-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      
+      .grievance-table th, .grievance-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+      
+      .grievance-table th {
+        background-color: var(--background-color);
+        font-weight: 500;
+      }
+      
+      .grievance-table tr:last-child td {
+        border-bottom: none;
+      }
+      
+      .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--background-color);
+        white-space: nowrap;
+      }
+      
+      .status-Pending { background-color: var(--status-pending); }
+      .status-InProgress { background-color: var(--status-progress); }
+      .status-Resolved { background-color: var(--status-resolved); }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 1rem;
+        }
+        h1 {
+          font-size: 2rem;
+        }
+        .container, .result, .auth-form {
+          padding: 1.5rem;
+        }
+        .submit-button {
+          width: 100%;
+        }
+        
+        /* Responsive table */
+        .grievance-table thead {
+          display: none;
+        }
+        .grievance-table, .grievance-table tbody, .grievance-table tr, .grievance-table td {
+          display: block;
+          width: 100%;
+        }
+        .grievance-table tr {
+          margin-bottom: 1rem;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+        }
+        .grievance-table td {
+          text-align: right;
+          padding-left: 50%;
+          position: relative;
+          border-bottom: 1px solid var(--border-color);
+        }
+        .grievance-table td:last-child {
+          border-bottom: none;
+        }
+        .grievance-table td::before {
+          content: attr(data-label);
+          position: absolute;
+          left: 1rem;
+          width: calc(50% - 2rem);
+          padding-right: 10px;
+          text-align: left;
+          font-weight: 500;
+          color: var(--on-background-color);
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "preact/": "https://aistudiocdn.com/preact@^10.27.2/",
+    "preact": "https://aistudiocdn.com/preact@^10.27.2",
+    "htm/": "https://aistudiocdn.com/htm@^3.1.1/"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

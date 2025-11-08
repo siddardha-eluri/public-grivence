@@ -1,0 +1,7 @@
+{
+  "description": "A public grievance reporting system for rural development.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "name": ""
+}
